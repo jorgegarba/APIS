@@ -1,14 +1,56 @@
 window.addEventListener('load',function(){
+    /**
+     * Firebase
+     */
+    firebase.initializeApp(config);
+    /**
+     * Variables de Mapas
+     */
     var map;
+    var marker;
     var btnPosicion = document.getElementById("btnPosicion");
-    btnPosicion.addEventListener('click',()=>{
-        let marker = new google.maps.Marker({
-            position:miPosicion,
-            map:map,
-        })
+    var btnBorrarPosicion = document.getElementById("btnBorrarPosicion");
+    var btnGetCanchas = document.getElementById("btnGetCanchas");
+    var divCanchas = document.getElementById("canchas");
+    var btnCrearCancha = document.getElementById("btnCrearCancha");
+    var canchasFirebase = [];
+    var marcadoresFirebase = [];
+    
+    var cargando = document.createElement("img");
+    cargando.setAttribute("src","./img/cargando.gif")
+    
+    divCanchas.append(cargando);
+    
+    //1. crear la referencia al nodo en firebase
+    var referencia = firebase.database().ref('canchitas');
+
+    btnGetCanchas.addEventListener('click',()=>{
+        
+        //2. usar funcion de obtención de registros [on,once]
+        //ONCE: Trae la data una sola vez
+        referencia.once('value',(data)=>{
+            llenarCanchas(data);           
+        });
     });
 
+    btnPosicion.addEventListener('click',()=>{
+        marker = new google.maps.Marker(
+            {
+                position:miPosicion,
+                map:map,
+                draggable:true,
+                icon: './img/marcador.png'
+            }
+        );
+    });
+
+    btnBorrarPosicion.addEventListener('click',()=>{
+        marker.setMap(null);
+    });
+
+
     var div = document.getElementById('map');
+    
     var miPosicion = {
         lat:0,
         lng:0
@@ -39,7 +81,73 @@ window.addEventListener('load',function(){
     }
 
     getLocation();
-        
+
+    let llenarCanchas = (data)=>{
+        //data es el arreglo de elementos tomados de Firebase
+        if(data){
+            divCanchas.innerHTML = "";
+            //recorremos el arreglo de canchas de firebase
+            //representado en el objeto fila en cada iteración
+            data.forEach((fila)=>{
+                //agregando cada cancha mapeada en el objeto Cancha
+                //al arreglo canchasFirebase
+                canchasFirebase.push(new Cancha(fila.key,
+                                                fila.val().direccion,
+                                                fila.val().lat,
+                                                fila.val().lng,
+                                                fila.val().nombre,
+                                                fila.val().telefono));
+            });
+            
+            /**
+             * Creando la tabla de canchas
+             */
+
+             let tabla = document.createElement("table");
+             tabla.setAttribute('class','table');
+             canchasFirebase.forEach((cancha)=>{
+
+                let tr = document.createElement("tr");
+                let tdId = document.createElement("td");
+                tdId.innerHTML = cancha.id;
+                let tdNombre = document.createElement("td");
+                tdNombre.innerHTML = cancha.nombre;
+                tr.append(tdId,tdNombre);
+                tabla.append(tr);
+
+                //llenando marcadores en el mapa
+                //creamos un marcador
+                let marcadorTmp = new google.maps.Marker({
+                    position:{lat:cancha.lat,lng:cancha.lng},
+                    map:map,
+                    icon: './img/marcador.png'
+                });
+
+                marcadoresFirebase.push(marcadorTmp);
+                
+
+             });
+             divCanchas.append(tabla);
+        }else{
+            divCanchas.innerHTML = "<h2>No hay canchitas</h2>";
+        }
+    }
+
+    btnCrearCancha.addEventListener('click',()=>{
+        //generando un ID nuevo para la cancha
+        const nuevaKey = referencia.push().key;
+        //funcion set en firebase
+        //set, asigna valores a un determinado nodo o child o ref,
+        //set toma la data de un JSON
+        referencia.child(nuevaKey).set({
+            direccion:$('#inputDireccion').val(),
+            nombre:$('#inputNombre').val(),
+            telefono:$('#inputTelefono').val(),
+            lat:-16.405600,
+            lng:-71.557362,
+        });
+    })
+
 });
 
 
