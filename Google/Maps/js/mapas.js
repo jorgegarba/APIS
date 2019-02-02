@@ -93,6 +93,25 @@ window.addEventListener('load',function(){
             });
 
         });
+        var inputBusqueda = document.getElementById("inputBusqueda");
+        //creando un elemento de búsqueda de Google maps
+        var searchBox = new google.maps.places.SearchBox(inputBusqueda);
+        //inyectando y posicionando un elemento dentro del mapa de Google
+        mapaLatLng.controls[google.maps.ControlPosition.TOP_LEFT].push(inputBusqueda);
+
+      
+        searchBox.addListener("places_changed",()=>{
+          var places = searchBox.getPlaces();
+          if(places.length == 0){
+            return;
+          }
+          places.forEach((place)=>{
+            console.log(place.geometry.location.lat());
+          });
+        });
+
+
+
     }
 
 

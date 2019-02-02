@@ -25,9 +25,14 @@
                 </button>
             </div>
             <div class="modal-body">
+
+                <input type="text" id="inputBusqueda" placeholder="Ingrese una dirección">
+
                 <div id="mapaLatLng"></div>
+
                 <hr>
                 <form>
+
                     <div class="form-row">
                       <div class="col">
                         <label for="inputLatitud">Latitud:</label>
@@ -40,16 +45,6 @@
                         <small class="form-text text-muted">Longitud de la Cancha</small>
                       </div>
                     </div>
-
-
-
-
-
-
-
-
-
-
 
                     <div class="form-group">
                         <label for="inputNombre">Nombre:</label>
@@ -136,7 +131,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCstdkX8vjyX_IGonfj1u0ZIZ0h6vAq7XA"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCstdkX8vjyX_IGonfj1u0ZIZ0h6vAq7XA&libraries=places"
     async defer></script>
 
 </body>
