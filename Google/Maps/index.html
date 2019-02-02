@@ -11,12 +11,12 @@
     <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-database.js"></script>
     <script type="text/javascript" src="./js/config.js"></script>
     <title>Document</title>
-    
+
 </head>
 <body class="bg-dark">
     <!-- Modales -->
     <div class="modal fade" id="crearModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Crear Canchita</h5>
@@ -28,6 +28,29 @@
                 <div id="mapaLatLng"></div>
                 <hr>
                 <form>
+                    <div class="form-row">
+                      <div class="col">
+                        <label for="inputLatitud">Latitud:</label>
+                        <input type="text" class="form-control" id="inputLatitud" readonly>
+                        <small class="form-text text-muted">Latitud de la Cancha</small>
+                      </div>
+                      <div class="col">
+                        <label for="inputLongitud">Longitud:</label>
+                        <input type="text" class="form-control" id="inputLongitud" readonly>
+                        <small class="form-text text-muted">Longitud de la Cancha</small>
+                      </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
                     <div class="form-group">
                         <label for="inputNombre">Nombre:</label>
                         <input type="text" class="form-control" id="inputNombre" placeholder="Ingrese el Nombre">
@@ -60,7 +83,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -108,7 +131,7 @@
         <div class="row bg-light mt-5 p-5" id="canchas">
 
         </div>
-    </div>    
+    </div>
     <script type="text/javascript" src="./js/mapas.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>

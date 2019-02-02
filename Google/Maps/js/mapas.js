@@ -7,36 +7,46 @@ window.addEventListener('load',function(){
      * Variables de Mapas
      */
     var map;
+    var mapaLatLng;
     var marker;
+    var markerLatLng;
     var btnPosicion = document.getElementById("btnPosicion");
     var btnBorrarPosicion = document.getElementById("btnBorrarPosicion");
     var btnGetCanchas = document.getElementById("btnGetCanchas");
     var divCanchas = document.getElementById("canchas");
     var btnCrearCancha = document.getElementById("btnCrearCancha");
+    var inputLatitud = document.getElementById("inputLatitud");
+    var inputLongitud = document.getElementById("inputLongitud");
+
     var canchasFirebase = [];
     var marcadoresFirebase = [];
-    
+
     var cargando = document.createElement("img");
     cargando.setAttribute("src","./img/cargando.gif")
-    
+
     divCanchas.append(cargando);
-    
+
     //1. crear la referencia al nodo en firebase
     var referencia = firebase.database().ref('canchitas');
 
     btnGetCanchas.addEventListener('click',()=>{
-        
+
         //2. usar funcion de obtención de registros [on,once]
         //ONCE: Trae la data una sola vez
-        referencia.once('value',(data)=>{
-            llenarCanchas(data);           
+        // referencia.once('value',(data)=>{
+        //     llenarCanchas(data);
+        // });
+        //ON: Trae la data cada vez que ésta es alterada
+        referencia.on('value',(data)=>{
+            llenarCanchas(data);
         });
     });
 
     btnPosicion.addEventListener('click',()=>{
         marker = new google.maps.Marker(
             {
-                position:miPosicion,
+                // position:miPosicion,
+                position:{lat:miPosicion.lat,lng:miPosicion.lng},
                 map:map,
                 draggable:true,
                 icon: './img/marcador.png'
@@ -50,7 +60,7 @@ window.addEventListener('load',function(){
 
 
     var div = document.getElementById('map');
-    
+
     var miPosicion = {
         lat:0,
         lng:0
@@ -62,15 +72,40 @@ window.addEventListener('load',function(){
             zoom: 13
         });
     }
+    function initMapLatLng(){
+        mapaLatLng = new google.maps.Map(document.getElementById('mapaLatLng'), {
+            center: miPosicion,
+            zoom: 13
+        });
+        mapaLatLng.addListener('click',(coors)=>{
+          if(markerLatLng){
+              markerLatLng.setMap(null);
+          }
+
+          inputLatitud.setAttribute("value",coors.latLng.lat());
+          inputLongitud.setAttribute("value",coors.latLng.lng());
+
+          markerLatLng = new google.maps.Marker(
+            {
+              position:coors.latLng,
+              map:mapaLatLng,
+              icon: './img/marcador.png'
+            });
+
+        });
+    }
+
 
     //Usando la geolocalización(nativo de JavaScript)
     let getLocation = ()=>{
         if(navigator.geolocation){
             //significa que el navegador tiene disponible la geolocalozación
             navigator.geolocation.getCurrentPosition((position)=>{
+              //en este punto, se solicita al usuario permitir conocer su ubicación
                 miPosicion.lat = position.coords.latitude;
                 miPosicion.lng = position.coords.longitude;
                 initMap();
+                initMapLatLng();
             },(error)=>{
                 console.log("error",error);
             });
@@ -98,7 +133,7 @@ window.addEventListener('load',function(){
                                                 fila.val().nombre,
                                                 fila.val().telefono));
             });
-            
+
             /**
              * Creando la tabla de canchas
              */
@@ -124,7 +159,7 @@ window.addEventListener('load',function(){
                 });
 
                 marcadoresFirebase.push(marcadorTmp);
-                
+
 
              });
              divCanchas.append(tabla);
@@ -143,13 +178,13 @@ window.addEventListener('load',function(){
             direccion:$('#inputDireccion').val(),
             nombre:$('#inputNombre').val(),
             telefono:$('#inputTelefono').val(),
-            lat:-16.405600,
-            lng:-71.557362,
+            lat:markerLatLng.getPosition().lat(),
+            lng:markerLatLng.getPosition().lng(),
+        },(error)=>{
+          if(error){
+            alert("Ups!, No se pudo crear la canchita");
+          }
         });
     })
 
 });
-
-
-
-
