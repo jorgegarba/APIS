@@ -9,6 +9,7 @@
     <script src="./models/Cancha.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-storage.js"></script>
     <script type="text/javascript" src="./js/config.js"></script>
     <title>Document</title>
 
@@ -118,12 +119,15 @@
                         data-toggle="modal"
                         type="button"
                         data-target="#crearModal">Crear Cancha</button>
+                <hr>
+                <input type="file" class="form-control mb-2" id="photo">
+                <button class="btn btn-warning btn-block" id="btnSubirArchivo">Subir Archivo Ejemplo</button>
             </div>
             <div class="col-md-9">
                 <div id="map"></div>
             </div>
         </div>
-        <div class="row bg-light mt-5 p-5" id="canchas">
+        <div class="row bg-light m-5 p-5" id="canchas">
 
         </div>
     </div>

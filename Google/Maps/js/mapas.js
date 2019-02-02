@@ -3,6 +3,7 @@ window.addEventListener('load',function(){
      * Firebase
      */
     firebase.initializeApp(config);
+
     /**
      * Variables de Mapas
      */
@@ -17,6 +18,7 @@ window.addEventListener('load',function(){
     var btnCrearCancha = document.getElementById("btnCrearCancha");
     var inputLatitud = document.getElementById("inputLatitud");
     var inputLongitud = document.getElementById("inputLongitud");
+    var btnSubirArchivo = document.getElementById("btnSubirArchivo");
 
     var canchasFirebase = [];
     var marcadoresFirebase = [];
@@ -24,20 +26,55 @@ window.addEventListener('load',function(){
     var cargando = document.createElement("img");
     cargando.setAttribute("src","./img/cargando.gif")
 
-    divCanchas.append(cargando);
 
     //1. crear la referencia al nodo en firebase
     var referencia = firebase.database().ref('canchitas');
+    //creando la referencia al storage de Firebase
+    var referenciaStorage = firebase.storage().ref();
+
+    btnSubirArchivo.addEventListener('click',()=>{
+      var inputPhoto = document.getElementById("photo");
+      //tomando el archivo seleccionado del input
+      var archivo = inputPhoto.files[0];
+      //asignando el nombre del Archivo
+      //el simbolo ''+'' sirve para transformar a entero el contenido al que haga referencia
+      var nombre = +(new Date()) + '-' + archivo.name;
+      //creando la variable que indicará el tipo de contenido que se envia al servidor
+      var metadata = {
+          contentType: archivo.type
+      }
+
+      referenciaStorage.child(nombre)
+                        .put(archivo,metadata)
+                        .then((snapshot)=>{
+                          return snapshot.ref.getDownloadURL();
+                        })
+                        .then((url)=>{
+                          console.log(url);
+                        })
+                        .catch((error)=>{
+                          console.log("error",error);
+                        });
+
+    });
+
+
 
     btnGetCanchas.addEventListener('click',()=>{
-
         //2. usar funcion de obtención de registros [on,once]
         //ONCE: Trae la data una sola vez
         // referencia.once('value',(data)=>{
         //     llenarCanchas(data);
         // });
         //ON: Trae la data cada vez que ésta es alterada
+        //limpiamos el arreglo de canchas y limpiamos la tabla
+        divCanchas.innerHTML = "";
+        divCanchas.append(cargando);
+        canchasFirebase = [];
+
         referencia.on('value',(data)=>{
+            divCanchas.innerHTML = "";
+            canchasFirebase = [];
             llenarCanchas(data);
         });
     });
@@ -99,7 +136,7 @@ window.addEventListener('load',function(){
         //inyectando y posicionando un elemento dentro del mapa de Google
         mapaLatLng.controls[google.maps.ControlPosition.TOP_LEFT].push(inputBusqueda);
 
-      
+
         searchBox.addListener("places_changed",()=>{
           var places = searchBox.getPlaces();
           if(places.length == 0){
@@ -158,7 +195,16 @@ window.addEventListener('load',function(){
              */
 
              let tabla = document.createElement("table");
-             tabla.setAttribute('class','table');
+             tabla.setAttribute('class','table table-hover');
+
+             let trCabecera = document.createElement("tr");
+             let thId = document.createElement("th");
+             let thNombre = document.createElement("th");
+             thId.innerHTML = "ID";
+             thNombre.innerHTML = "Nombre";
+             trCabecera.append(thId,thNombre);
+             tabla.append(trCabecera);
+
              canchasFirebase.forEach((cancha)=>{
 
                 let tr = document.createElement("tr");
